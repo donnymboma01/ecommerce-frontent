@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import {
   AiOutlineHome,
@@ -10,10 +11,29 @@ import { FaHeart } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./Navigation.css";
+import { useSelector, useDispatch } from "react-redux";
+import { useLoginMutation } from "../../redux/api/usersApiSlice";
+import { logout } from "../../redux/features/auth/authSlice";
 
 function Navigation() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+
+  const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  const [logoutApiCall] = useLoginMutation();
+
+  const logoutHandler = async () => {
+    try {
+      await logoutApiCall().unwrap();
+      dispatch(logout());
+      navigate("/login");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
@@ -83,6 +103,19 @@ function Navigation() {
         </div>
         {/* Fin du quatrième */}
 
+        <div className="relative">
+          <button
+            onClick={toggleDropdown}
+            className="flex items-center text-gray-800 focus:outline-none"
+          >
+            {userInfo ? (
+              <span className="text-white"> {userInfo.username} </span>
+            ) : (
+              <></>
+            )}
+          </button>
+        </div>
+
         <ul>
           <li>
             <Link
@@ -91,7 +124,7 @@ function Navigation() {
             >
               {" "}
               <AiOutlineLogin size={26} className="mr-2 mt-[3rem]" />{" "}
-              <span className="hidden nav-item-name mt-[3rem]">LOGIN</span>{" "}
+              <span className="hidden nav-item-name mt-[3rem]">Login</span>{" "}
             </Link>
           </li>
           <li>
@@ -101,7 +134,7 @@ function Navigation() {
             >
               {" "}
               <AiOutlineUserAdd size={26} className="mr-2 mt-[3rem]" />{" "}
-              <span className="hidden nav-item-name mt-[3rem]">REGISTER</span>{" "}
+              <span className="hidden nav-item-name mt-[3rem]">Register</span>{" "}
             </Link>
           </li>
         </ul>
