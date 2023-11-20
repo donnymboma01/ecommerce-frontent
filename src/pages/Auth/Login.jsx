@@ -35,6 +35,7 @@ function Login() {
       const res = await login({ email, password }).unwrap();
       console.log(res);
       dispatch(setCredentials({ ...res }));
+      toast.success(`Welcome home}`)
     } catch (error) {
       toast.error(error?.data?.message || error.message);
     }
@@ -90,7 +91,7 @@ function Login() {
           </form>
 
           <div className="mt-4">
-            <p className="text-black">
+            <p className="text-white">
               New Customer ?{" "}
               <Link
                 to={redirect ? `/register?redirect=${redirect}` : `/register`}
